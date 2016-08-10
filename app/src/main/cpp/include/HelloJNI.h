@@ -1,0 +1,1 @@
+JNIEXPORT int JNICALL Java_com_mytest_JNIActivity_getMessage(JNIEnv *, jobject);
