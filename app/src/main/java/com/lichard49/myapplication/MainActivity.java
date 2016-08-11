@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView tv;
@@ -22,8 +26,19 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 int value = stringFromJNI("/storage/emulated/legacy/hmm_data/eating_0.ext");
-                String valueString = String.valueOf(value);
-                setText("From native: " + valueString);
+                if(value == 123456789) {
+                    File file = new File("/storage/emulated/legacy/hmm_data/recognition_result");
+                    BufferedReader reader = new BufferedReader(new FileReader(file));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while((line = reader.readLine()) != null) {
+                        result.append(line);
+                        result.append('\n');
+                    }
+                    setText(result.toString());
+                } else {
+                    setText("Recognition failed");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
