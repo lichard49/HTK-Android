@@ -10,9 +10,11 @@ extern "C"
 
 JNIEXPORT int Java_com_lichard49_myapplication_MainActivity_stringFromJNI(
         JNIEnv* env,
-        jobject /* this */) {
-    // std::string hello = "Hello from C++";
-    // return env->NewStringUTF(hello.c_str());
+        jobject /* this */,
+        jstring testFramePathString) {
+    int result;
+    char *testFramePath = strdup(env->GetStringUTFChars(testFramePathString, 0));
+
     __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Hiiiiii", 1);
     char *args[] =
     {
@@ -25,9 +27,11 @@ JNIEXPORT int Java_com_lichard49_myapplication_MainActivity_stringFromJNI(
         "-n", "10", "20",
         "/storage/emulated/legacy/hmm_data/dict",
         "/storage/emulated/legacy/hmm_data/commands",
-        "/storage/emulated/legacy/hmm_data/downleft1_1.ext"
+        testFramePath
     };
 
-    return gogogo(16, args);
+    result = gogogo(16, args);
+    env->ReleaseStringUTFChars(testFramePathString, testFramePath);
+    return result;
     //return 51;
 }

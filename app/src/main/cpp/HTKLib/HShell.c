@@ -986,6 +986,8 @@ ReturnStatus InitSource(char *fname, Source *src,  IOFilter filter)
    CheckFn(fname);
    strcpy(src->name,fname);
    if ((src->f = FOpen(fname, filter, &(src->isPipe))) == NULL){
+      __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Cannot open source file", 1);
+      __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, fname, 1);
       HRError(5010,"InitSource: Cannot open source file %s",fname);
       return(FAIL);
    }

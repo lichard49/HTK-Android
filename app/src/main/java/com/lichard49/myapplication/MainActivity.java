@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                int value = stringFromJNI();
+                int value = stringFromJNI("/storage/emulated/legacy/hmm_data/eating_0.ext");
                 String valueString = String.valueOf(value);
                 setText("From native: " + valueString);
             } catch (Exception e) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native int stringFromJNI();
+    public native int stringFromJNI(String testFramePathString);
 
     // Used to load the 'native-lib' library on application startup.
     static {

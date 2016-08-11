@@ -968,9 +968,16 @@ void DoRecognition(void)
    AdaptXForm *incXForm;
 
    if ( (nf = FOpen(wdNetFn,NetFilter,&isPipe)) == NULL)
+   {
+      __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "DoRecognition: Cannot open Word Net file", 1);
+      __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, wdNetFn, 1);
       HError(3210,"DoRecognition: Cannot open Word Net file %s",wdNetFn);
+   }
    if((wdNet = ReadLattice(nf,&ansHeap,&vocab,TRUE,FALSE))==NULL)
+   {
+      __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "DoAlignment: ReadLattice failed", 1);
       HError(3210,"DoAlignment: ReadLattice failed");
+   }
    FClose(nf,isPipe);
 
    if (trace&T_TOP) {
@@ -1018,7 +1025,10 @@ void DoRecognition(void)
    else {                   /* Process files */
       while (NumArgs()>0) {
          if (NextArg()!=STRINGARG)
+         {
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "DoRecognition: Data file name expected", 1);
             HError(3219,"DoRecognition: Data file name expected");
+         }
          datFN = GetStrArg();
          if (trace&T_TOP) {
             printf("File: %s\n",datFN); fflush(stdout);
