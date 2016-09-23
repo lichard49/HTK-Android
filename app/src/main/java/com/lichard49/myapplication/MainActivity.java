@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,18 +55,15 @@ public class MainActivity extends AppCompatActivity {
                 // start measuring time
                 long start = System.nanoTime();
 
-                createExtFile(vectors, vectorSize, sampleFramePath);
+                // create .ext file as required by HVite
+                HTKService.createExtFile(vectors, vectorSize, sampleFramePath);
 
-                File file2 = HTKService.startForResult(getApplicationContext(),
-                        sampleFramePath + ".ext");
-                BufferedReader reader2 = new BufferedReader(new FileReader(file2));
-                StringBuilder result = new StringBuilder();
-                String line2;
-                while((line2 = reader2.readLine()) != null) {
-                    result.append(line2);
-                    result.append('\n');
-                }
-                setText(result.toString());
+                // run HVite and get likelihoods
+                Map<String, Float> likelihoods = HTKService.startForResultMap(
+                        getApplicationContext(), sampleFramePath + ".ext");
+
+                // show results
+                setText(likelihoods.toString());
 
                 ///////////////////////////////////////////////////////////////////////////////////
                 // stop measuring time
@@ -113,44 +111,5 @@ public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
-    }
-
-    private void createExtFile(List<String> fVectors, int numColumns, String fileName) throws IOException {
-
-        int n_samples = fVectors.size();
-        int sampPeriod = 2000; // default is 2000ns
-        int sampSize = 4;
-        int sizeOfVec = numColumns;
-        int parmKind = 9; // user defined
-
-		/*creates a file and DataOutputStream*/
-        FileOutputStream fout = new FileOutputStream(fileName + ".ext");
-        DataOutputStream dos = new DataOutputStream(fout);
-
-		/*writes 4-byte header*/
-        dos.writeInt(n_samples);	// number of samples
-        dos.writeInt(sampPeriod);	// period
-
-		/*writes 2-byte header*/
-        dos.writeChar(sampSize * sizeOfVec); // size = size of data x size of vector
-        dos.writeChar(parmKind); // type of sample
-
-		/*writes 8-byte feature fectors*/
-        for(int i=0; i<n_samples; i++){
-            String vecs = fVectors.get(i);
-            StringTokenizer st = new StringTokenizer(vecs);
-
-            while(st.hasMoreTokens()){
-                String vec = st.nextToken();
-
-                float f = (new Float(vec)).floatValue();
-
-				/*writes 4-byte vector value*/
-                dos.writeFloat(f);
-            }
-        }
-
-        //close file
-        fout.close();
     }
 }

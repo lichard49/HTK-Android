@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".HTKService"></service>
+        <service android:name=".HTKService" android:process=":htk_service"></service>
     </application>
 
 </manifest>
