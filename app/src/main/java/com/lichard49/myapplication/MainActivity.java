@@ -56,20 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
                 createExtFile(vectors, vectorSize, sampleFramePath);
 
-                int value = stringFromJNI(sampleFramePath + ".ext");
-                if(value == 123456789) {
-                    File file2 = new File("/storage/emulated/legacy/hmm_data/recognition_result");
-                    BufferedReader reader2 = new BufferedReader(new FileReader(file2));
-                    StringBuilder result = new StringBuilder();
-                    String line2;
-                    while((line2 = reader2.readLine()) != null) {
-                        result.append(line2);
-                        result.append('\n');
-                    }
-                    setText(result.toString());
-                } else {
-                    setText("Recognition failed");
+                File file2 = HTKService.startForResult(getApplicationContext(),
+                        sampleFramePath + ".ext");
+                BufferedReader reader2 = new BufferedReader(new FileReader(file2));
+                StringBuilder result = new StringBuilder();
+                String line2;
+                while((line2 = reader2.readLine()) != null) {
+                    result.append(line2);
+                    result.append('\n');
                 }
+                setText(result.toString());
 
                 ///////////////////////////////////////////////////////////////////////////////////
                 // stop measuring time
@@ -112,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native int stringFromJNI(String testFramePathString);
+    public static native int stringFromJNI(String testFramePathString);
 
     // Used to load the 'native-lib' library on application startup.
     static {
