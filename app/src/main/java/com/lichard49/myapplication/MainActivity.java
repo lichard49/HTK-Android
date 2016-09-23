@@ -5,6 +5,8 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Bundle data;
     private Handler handler = new Handler() {
         public void handleMessage(Message m) {
-            tv.setText(m.getData().getString("text"));
+            tv.setText(System.currentTimeMillis() + ":\n" + m.getData().getString("text"));
         }
     };
 
@@ -84,12 +86,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        tv = new TextView(getApplicationContext());
-        setContentView(tv);
+        tv = (TextView) findViewById(R.id.text_view);
         setText("hi");
 
-        new Thread(jniThread).start();
+        Button button = (Button) findViewById(R.id.go_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(jniThread).start();
+            }
+        });
     }
 
     private void setText(String text) {
